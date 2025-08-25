@@ -4,14 +4,15 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { app } from "./lib/firebase";
+import { app } from "../../lib/firebase";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, type User } from "firebase/auth";
+import { getToken } from "../../lib/firebase/auth";
 
-export default function Home() {
+export default function SignIn() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-
+  
   useEffect(() => {
     const auth = getAuth(app);
     const unsub = onAuthStateChanged(auth, (u) => setUser(u));
@@ -115,6 +116,12 @@ export default function Home() {
                   {user.email}
                 </p>
                 <p className="text-xs text-neutral-500 truncate">UID: {user.uid}</p>
+                <button onClick={async () => {
+                  const token = await getToken(user);
+                  console.log("Token:", token);
+                }}>
+                  Obter token
+                </button>
               </div>
             </div>
 
